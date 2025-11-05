@@ -1,0 +1,86 @@
+{
+  "View Correspondence-c6212": {
+    "id": "View Correspondence-c6212",
+    "original_name": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T19:40:38.413203",
+    "launch_file": null
+  },
+  "View Correspondence-5e0fd": {
+    "id": "View Correspondence-5e0fd",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T20:01:54.488247",
+    "translations": {},
+    "launch_file": "D:\\z_Home\\scorm-translator\\static\\scorm\\View Correspondence-5e0fd\\index_lms.html"
+  },
+  "View Correspondence-b90f2": {
+    "id": "View Correspondence-b90f2",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:08:19.146886",
+    "translations": {}
+  },
+  "View Correspondence-73f30": {
+    "id": "View Correspondence-73f30",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:12:43.017568",
+    "translations": {}
+  },
+  "View Correspondence-446a7": {
+    "id": "View Correspondence-446a7",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:14:47.938101",
+    "translations": {}
+  },
+  "View Correspondence-f833e": {
+    "id": "View Correspondence-f833e",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:17:18.912569",
+    "translations": {}
+  },
+  "View Correspondence-94d96": {
+    "id": "View Correspondence-94d96",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:25:22.117343",
+    "translations": {}
+  },
+  "View Correspondence-9d503": {
+    "id": "View Correspondence-9d503",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:39:42.490888",
+    "translations": {}
+  },
+  "View Correspondence-8e86a": {
+    "id": "View Correspondence-8e86a",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:46:14.986920",
+    "translations": {
+      "fr": {
+        "language": "French",
+        "created_at": "2025-11-05T22:49:14.955300",
+        "zip_file": "View Correspondence-8e86a_fr.zip",
+        "audio_files_translated": 35
+      }
+    }
+  },
+  "AI Ethics Training for Employees_Responsible AI Use in the Workplace-9088f": {
+    "id": "AI Ethics Training for Employees_Responsible AI Use in the Workplace-9088f",
+    "original_name": "AI Ethics Training for Employees_Responsible AI Use in the Workplace",
+    "filename": "AI Ethics Training for Employees_Responsible AI Use in the Workplace.zip",
+    "uploaded_at": "2025-11-05T22:50:53.942738",
+    "translations": {}
+  },
+  "View Correspondence-17e6b": {
+    "id": "View Correspondence-17e6b",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-05T22:57:23.541185",
+    "translations": {}
+  }
+}
