@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🌍 SCORM Audio & Language Translator
 
 A powerful Flask-based web application that translates SCORM e-learning courses including both text content and audio narration into multiple languages.
@@ -368,3 +367,4 @@ This allows organizations, educators, and training professionals to **instantly 
 git clone https://github.com/ManojDaniels/AI-SCORM-Translator.git
 cd AI-SCORM-Translator
 >>>>>>> 1cf96bbbfe3598bd78d2522b28a80463e96723cf
+
