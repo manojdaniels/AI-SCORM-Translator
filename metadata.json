@@ -1,3 +1,34 @@
+<<<<<<< HEAD
+{
+  "View Correspondence-fdaf7": {
+    "id": "View Correspondence-fdaf7",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-09T19:32:27.723423",
+    "translations": {
+      "ru": {
+        "language": "Russian",
+        "created_at": "2025-11-09T19:35:44.644505",
+        "zip_file": "View Correspondence-fdaf7_ru.zip",
+        "audio_files_translated": 35
+      }
+    }
+  },
+  "View Correspondence-07a37": {
+    "id": "View Correspondence-07a37",
+    "original_name": "View Correspondence",
+    "filename": "View Correspondence.zip",
+    "uploaded_at": "2025-11-09T19:50:58.979626",
+    "translations": {
+      "fr": {
+        "language": "French",
+        "created_at": "2025-11-09T19:55:52.586492",
+        "zip_file": "View Correspondence-07a37_fr.zip",
+        "audio_files_translated": 35
+      }
+    }
+  }
+=======
 {
   "View Correspondence-c6212": {
     "id": "View Correspondence-c6212",
@@ -83,4 +114,5 @@
     "uploaded_at": "2025-11-05T22:57:23.541185",
     "translations": {}
   }
+>>>>>>> 5a4cb7880bd31b448b510e9a72ecd28586840cf6
 }
