@@ -1,3 +1,9 @@
+🧩 Project Overview
+
+SCORM Audio & Language Translator is an advanced, AI-powered web application developed using Flask (Python) that enables global e-learning scalability by translating SCORM-based course content — both textual elements and embedded audio narration — into multiple languages.
+
+The system provides a modern, responsive UI (built with HTML5, Bootstrap, and JavaScript) and features an integrated SCORM Player that allows users to preview and validate both the original and translated courses directly within the application.
+
 # 🌍 SCORM Audio & Language Translator
 
 A powerful Flask-based web application that translates SCORM e-learning courses including both text content and audio narration into multiple languages.
@@ -286,17 +292,5 @@ Having issues?
 2. Check [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md) for detailed help
 3. Review [QUICK_START.md](QUICK_START.md) for common solutions
 4. Check console output for error messages
-
-## 🗺️ Roadmap
-
-- [ ] Progress bars for translations
-- [ ] Batch upload multiple courses
-- [ ] User authentication system
-- [ ] Cloud storage support (S3, Azure)
-- [ ] Advanced audio quality options
-- [ ] Translation memory/caching
-- [ ] REST API for automation
-- [ ] Docker containerization
-- [ ] Multi-language UI
 
 
