@@ -2,24 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>📘 SCORM Translator Library</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>🎧 SCORM Audio Translator Library</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
   <style>
     body { background: #f8f9fa; }
     .card { border-radius: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
     .card-header { font-weight: 600; }
     .badge { font-size: 0.85rem; }
-    .toast-container {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 2000;
-    }
+    .modal-backdrop.show { opacity: 0.4; }
   </style>
 </head>
 <body>
   <div class="container my-5">
-    <h2 class="text-center mb-4">📘 SCORM Course Library</h2>
+    <h2 class="text-center mb-4">🎧 SCORM Audio Translator Library</h2>
+    <p class="text-center text-muted">
+      Text translation is intentionally disabled in this Audio-Only build.  
+      The app converts spoken narration in SCORM courses into selected languages while preserving the course structure.
+    </p>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -47,13 +49,15 @@
                 <p><strong>Uploaded:</strong> {{ course.uploaded_at | default('Unknown') }}</p>
 
                 {% if course.translations %}
-                  <h6>🌐 Available Translations:</h6>
+                  <h6>🌐 Available Audio Translations:</h6>
                   <ul>
                     {% for lang, info in course.translations.items() %}
                       <li>
                         <span class="badge bg-success">{{ info.language }}</span>
-                        - <a href="{{ url_for('play', pkg=course.id, lang=lang) }}" target="_blank">Play</a>
-                        | <a href="{{ url_for('download', zipname=info.zip_file) }}">Download</a>
+                        — 
+                        <a href="{{ url_for('play', pkg=course.id, lang=lang) }}" target="_blank">Play</a>
+                        |
+                        <a href="{{ url_for('download', zipname=info.zip_file) }}">Download</a>
                       </li>
                     {% endfor %}
                   </ul>
@@ -62,28 +66,25 @@
                 {% endif %}
 
                 <hr>
-                <h6>🌍 Translate to New Language</h6>
-               <form action="{{ url_for('translate') }}" method="post" class="translate-form row gy-2 align-items-center" onsubmit="startTranslation(event, this)">
+                <h6>🎧 Translate Course Audio</h6>
+                <form action="{{ url_for('translate_route') }}" method="post" class="row gy-2 align-items-center translate-form">
                   <input type="hidden" name="pkg_id" value="{{ course.id }}">
-                  <div class="col-md-6">
+                  <div class="col-md-8">
                     <select class="form-select" name="language" required>
-                      <option value="">Select Language</option>
+                      <option value="">Select Target Language</option>
                       {% for lang in languages %}
                         <option value="{{ lang }}">{{ lang }}</option>
                       {% endfor %}
                     </select>
                   </div>
-                  <div class="col-md-4 form-check">
-                    <input class="form-check-input" type="checkbox" name="translate_audio" id="audio_{{ loop.index }}">
-                    <label class="form-check-label" for="audio_{{ loop.index }}">Include Audio</label>
-                  </div>
-                  <div class="col-md-2">
-                    <button type="submit" class="btn btn-success w-100">Translate</button>
+                  <div class="col-md-4">
+                    <button type="submit" class="btn btn-success w-100">🎙 Translate Audio</button>
                   </div>
                 </form>
 
                 <hr>
-                <a href="{{ url_for('play', pkg=course.id, lang='en') }}" class="btn btn-primary btn-sm mt-2" target="_blank">
+                <a href="{{ url_for('play', pkg=course.id, lang='en') }}" 
+                   class="btn btn-primary btn-sm mt-2" target="_blank">
                   ▶️ Play Original
                 </a>
                 <form action="{{ url_for('delete', pkg=course.id) }}" method="post" class="d-inline">
@@ -101,114 +102,57 @@
     {% endif %}
   </div>
 
-  <!-- Toast Container for Live Progress -->
-  <div class="toast-container" id="toastContainer"></div>
+  <!-- Translation Progress Modal -->
+  <div class="modal fade" id="progressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-4 text-center">
+        <h5 class="mb-3">⏳ Translating Course Audio...</h5>
+        <div class="progress mb-3">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" 
+               role="progressbar" style="width: 0%">0%</div>
+        </div>
+        <p id="progressMessage" class="text-muted mb-0">Starting...</p>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const toastContainer = document.getElementById('toastContainer');
-    let activeToasts = {};
+    const modal = new bootstrap.Modal(document.getElementById('progressModal'));
+    const progressBar = document.querySelector('.progress-bar');
+    const messageEl = document.getElementById('progressMessage');
+    let pollInterval = null;
 
-    // Create or update toast for a package
-    function showProgressToast(pkgId, message, percent) {
-      if (!activeToasts[pkgId]) {
-        const toastEl = document.createElement('div');
-        toastEl.classList.add('toast', 'align-items-center', 'text-bg-primary', 'border-0');
-        toastEl.innerHTML = `
-          <div class="d-flex p-3">
-            <div class="toast-body">
-              <strong>Translating:</strong> ${pkgId}<br>
-              <div class="progress mt-2" style="height: 6px;">
-                <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;"></div>
-              </div>
-              <small class="message"></small>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-          </div>`;
-        toastContainer.appendChild(toastEl);
-        const toast = new bootstrap.Toast(toastEl, { autohide: false });
-        toast.show();
-        activeToasts[pkgId] = toastEl;
-      }
+    // Intercept translate form submits
+    document.querySelectorAll('.translate-form').forEach(form => {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const pkgId = form.querySelector('[name="pkg_id"]').value;
+        modal.show();
+        pollInterval = setInterval(() => pollProgress(pkgId), 2000);
+        form.submit();
+      });
+    });
 
-      const toastEl = activeToasts[pkgId];
-      const bar = toastEl.querySelector('.progress-bar');
-      const msg = toastEl.querySelector('.message');
-      bar.style.width = `${percent}%`;
-      msg.innerText = message;
-
-      if (percent >= 100) {
-        setTimeout(() => {
-          const toast = bootstrap.Toast.getInstance(toastEl);
-          toast.hide();
-          delete activeToasts[pkgId];
-        }, 3000);
-      }
-    }
-
-    // Periodically poll progress for active translations
     async function pollProgress(pkgId) {
       try {
         const res = await fetch(`/progress/${pkgId}`);
         const data = await res.json();
-        showProgressToast(pkgId, data.message, data.percent);
-        if (data.percent < 100) {
-          setTimeout(() => pollProgress(pkgId), 2000);
+        const percent = data.percent || 0;
+        const message = data.message || "Working...";
+        progressBar.style.width = `${percent}%`;
+        progressBar.innerText = `${percent}%`;
+        messageEl.innerText = message;
+        if (percent >= 100) {
+          clearInterval(pollInterval);
+          setTimeout(() => modal.hide(), 2000);
         }
       } catch (err) {
-        console.error("Progress polling error:", err);
+        console.error(err);
       }
     }
-
-    // Hook translation form submit
-    document.querySelectorAll('.translate-form').forEach(form => {
-      form.addEventListener('submit', e => {
-        const pkgId = form.querySelector('[name="pkg_id"]').value;
-        pollProgress(pkgId);
-      });
-    });
   });
   </script>
-
-  <script>
-async function startTranslation(e, form) {
-  e.preventDefault(); // stop reload
-  const pkgId = form.querySelector('[name="pkg_id"]').value;
-  const formData = new FormData(form);
-
-  // Show initial message
-  alert(`Started background translation for package: ${pkgId}`);
-
-  try {
-    const res = await fetch(form.action, { method: "POST", body: formData });
-    if (res.ok) {
-      pollProgress(pkgId);
-    } else {
-      alert("Error starting translation. Check server log.");
-    }
-  } catch (err) {
-    console.error("Error:", err);
-  }
-}
-
-async function pollProgress(pkgId) {
-  const interval = setInterval(async () => {
-    const res = await fetch(`/progress/${pkgId}`);
-    const data = await res.json();
-    console.log("Progress:", data);
-
-    // Optionally update UI or progress bar here
-
-    if (data.percent >= 100) {
-      clearInterval(interval);
-      alert(`✅ Translation completed for ${pkgId}`);
-      location.reload(); // refresh once after completion
-    }
-  }, 2000);
-}
-</script>
-
-
 </body>
 </html>

@@ -19,6 +19,13 @@ import tempfile
 from threading import Lock
 import xml.etree.ElementTree as ET
 import time
+import pathlib, re
+
+path = pathlib.Path("static/scorm/yourcourse/html5/data/js")
+for f in path.glob("*.js"):
+    txt = f.read_text(errors="ignore")
+    if re.search(r'"content"\s*:\s*"', txt):
+        print("✅ Text found in:", f.name)
 
 # ── Translation progress tracking ───────────────────────────
 progress = {}
@@ -91,18 +98,23 @@ def do_translate(txt, tgt):
 
 # Flexible text patterns in SCORM files (kept conservative)
 PATTERNS = [
-    # Match key-value text pairs like "label": "Hello world"
-    re.compile(r'(["\'](altText|title|text|label|caption|description|heading|content|name)["\']\s*:\s*["\'])([^"\']+)(["\'])'),
+    # Match key-value pairs with typical Storyline keys
+    re.compile(r'(["\'](altText|title|text|label|caption|description|heading|content|name|value)["\']\s*:\s*["\'])([^"\']{3,500})(["\'])'),
 
-    # Match inner HTML between tags
+    # Match plain quoted text between tags (HTML)
     re.compile(r'>([^<]{3,200})<'),
 
-    # Match plain quoted text (e.g., "Welcome" or 'Click here')
+    # Match Storyline JSON blocks like "content":"some text"
+    re.compile(r'("content"\s*:\s*")([^"]{3,500})(")'),
+
+    # Fallback for quoted readable strings
     re.compile(r'(["\'])([A-Za-z0-9\s,;:!?.@#&()_-]{3,200})(["\'])')
 ]
 
 
-EXCLUDED = {"data.js", "frame.js", "paths.js", "configuration.js"}
+
+EXCLUDED = {"frame.js", "paths.js", "bootstrapper.min.js", "slides.min.js"}
+
 AUDIO_EXTENSIONS = {'.mp3', '.wav', '.ogg', '.m4a', '.flac', '.aac'}
 
 
@@ -322,12 +334,10 @@ def translate_storyline_js(file_path: Path, lang_code: str):
             text = pat.sub(do, text)
 
         if translations_made > 0:
-            file_path.write_text(text, "utf-8")
             print(f"✓ Translated {translations_made} text blocks in {file_path.name}")
-            print(f"✅ Saved translated file: {file_path.name}")
 
         else:
-            print(f"⚠ No translatable text found in {file_path.name}")
+            print(f"⚠ No text matched in {file_path.name}")
 
     except Exception as e:
         print(f"Error processing {file_path.name}: {e}")

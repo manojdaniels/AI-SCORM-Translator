@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#<<<<<<< HEAD
 import os
 import shutil
 import zipfile
@@ -581,7 +581,7 @@ def test_translation():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-=======
+#=======
 import os
 import shutil
 import zipfile
@@ -1164,4 +1164,4 @@ def test_translation():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
->>>>>>> 5a4cb7880bd31b448b510e9a72ecd28586840cf6
+#>>>>>>> 5a4cb7880bd31b448b510e9a72ecd28586840cf6

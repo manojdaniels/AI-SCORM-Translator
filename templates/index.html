@@ -1,216 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCORM Translation Manager</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        .nav-links {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .nav-links a {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .nav-links a:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-        }
-        .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            background: #f8f9ff;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-        .upload-area:hover {
-            border-color: #764ba2;
-            background: #f0f2ff;
-        }
-        .upload-icon {
-            font-size: 48px;
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-        input[type="file"] {
-            display: none;
-        }
-        .file-label {
-            display: inline-block;
-            padding: 12px 30px;
-            background: #667eea;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .file-label:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-        }
-        .file-name {
-            margin-top: 15px;
-            color: #666;
-            font-size: 14px;
-        }
-        button[type="submit"] {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        button[type="submit"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-        button[type="submit"]:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .flash {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-        .flash.error {
-            background: #fee;
-            color: #c33;
-            border-left: 4px solid #c33;
-        }
-        .flash.success {
-            background: #efe;
-            color: #3c3;
-            border-left: 4px solid #3c3;
-        }
-        .info-box {
-            background: #f0f7ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        .info-box h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .info-box ul {
-            list-style-position: inside;
-            color: #666;
-            font-size: 14px;
-        }
-        .info-box li {
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>🎧 SCORM Audio Translator — Upload Course</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <style>
+    body {
+      background: linear-gradient(to right, #f8f9fa, #eef2f7);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .upload-card {
+      max-width: 650px;
+      margin: 6rem auto;
+      background: white;
+      border-radius: 1rem;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .upload-area {
+      border: 2px dashed #ccc;
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+    .upload-area:hover {
+      background: #f1f3f6;
+      border-color: #007bff;
+    }
+    .upload-area.dragover {
+      background: #e9f5ff;
+      border-color: #0d6efd;
+    }
+    .footer-note {
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌍 SCORM Translator</h1>
-        <p class="subtitle">Upload and translate your SCORM courses</p>
-        
-        <div class="nav-links">
-            <a href="{{ url_for('library') }}">📚 My Courses</a>
-        </div>
+  <div class="upload-card text-center">
+    <h3 class="mb-3">🎧 SCORM Audio Translator</h3>
+    <p class="text-muted mb-4">
+      Upload a <strong>SCORM ZIP</strong> package to translate its narration into any supported language.  
+      <br>⚙️ This build performs <strong>Audio Translation Only</strong> — text content remains unchanged.
+    </p>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'warning' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
-            <div class="upload-area">
-                <div class="upload-icon">📦</div>
-                <h3>Select SCORM Package</h3>
-                <p style="color: #999; margin: 10px 0;">Choose a .zip file containing your SCORM course</p>
-                <label for="scormZip" class="file-label">Browse Files</label>
-                <input type="file" id="scormZip" name="scormZip" accept=".zip" required>
-                <div class="file-name" id="fileName">No file selected</div>
-            </div>
+    <form id="uploadForm" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+      <div class="upload-area" id="dropZone">
+        <p class="mb-0">📦 Drag and drop your <strong>SCORM .zip</strong> file here<br>or click to select manually.</p>
+        <input type="file" id="fileInput" name="scormZip" accept=".zip" class="d-none" required>
+      </div>
 
-            <button type="submit" id="submitBtn">Upload Course</button>
-        </form>
+      <button type="submit" class="btn btn-primary mt-4 w-100">🚀 Upload & Proceed</button>
+    </form>
 
-        <div class="info-box">
-            <h3>How it works:</h3>
-            <ul>
-                <li>Upload your SCORM package (.zip file)</li>
-                <li>View and manage courses in your library</li>
-                <li>Translate courses to multiple languages</li>
-                <li>Play courses directly in the browser</li>
-                <li>Download translated packages</li>
-            </ul>
-        </div>
-    </div>
+    <p class="footer-note">
+      After upload, go to the <a href="{{ url_for('library') }}">Library</a> to start translating audio files.
+    </p>
+  </div>
 
-    <script>
-        const fileInput = document.getElementById('scormZip');
-        const fileName = document.getElementById('fileName');
-        const submitBtn = document.getElementById('submitBtn');
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const form = document.getElementById('uploadForm');
 
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                fileName.textContent = '📄 ' + this.files[0].name;
-                submitBtn.disabled = false;
-            } else {
-                fileName.textContent = 'No file selected';
-                submitBtn.disabled = true;
-            }
-        });
-    </script>
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.endsWith('.zip')) {
+        fileInput.files = e.dataTransfer.files;
+        dropZone.innerHTML = `<p>✅ Selected: <strong>${file.name}</strong></p>`;
+      } else {
+        alert('Please upload a valid SCORM .zip file.');
+      }
+    });
+
+    form.addEventListener('submit', e => {
+      const file = fileInput.files[0];
+      if (!file || !file.name.endsWith('.zip')) {
+        e.preventDefault();
+        alert('Please select a valid SCORM .zip file.');
+      } else {
+        dropZone.innerHTML = `<p>⏳ Uploading <strong>${file.name}</strong>...</p>`;
+      }
+    });
+  </script>
 </body>
 </html>

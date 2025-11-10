@@ -1,6 +1,22 @@
-Flask==3.0.0
+# === Core Web Framework ===
+Flask==3.0.3
+Werkzeug==3.0.3
+Jinja2==3.1.4
+
+# === Translation & Audio Processing ===
 deep-translator==1.11.4
-gTTS==2.5.0
-SpeechRecognition==3.10.1
+gTTS==2.5.1
+SpeechRecognition==3.10.4
 pydub==0.25.1
-Werkzeug==3.0.1
+
+# === System Utilities ===
+python-dotenv==1.0.1
+requests==2.32.3
+
+# === AI / CUDA Backend (optional) ===
+torch==2.5.0+cu129
+torchaudio==2.5.0+cu129
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# === Misc Tools ===
+uuid==1.30
