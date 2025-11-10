@@ -1,296 +1,117 @@
-🧩 Project Overview
+# 🎧 SCORM Audio Translator — AI-Powered LMS Audio Converter
 
-SCORM Audio & Language Translator is an advanced, AI-powered web application developed using Flask (Python) that enables global e-learning scalability by translating SCORM-based course content — both textual elements and embedded audio narration — into multiple languages.
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![Flask](https://img.shields.io/badge/Flask-3.x-green)
+![GoogleTranslator](https://img.shields.io/badge/Translation-Deep--Translator-orange)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-The system provides a modern, responsive UI (built with HTML5, Bootstrap, and JavaScript) and features an integrated SCORM Player that allows users to preview and validate both the original and translated courses directly within the application.
+> **An intelligent Flask-based system that automatically translates SCORM course narrations into multiple languages — preserving the original course structure and playback through an integrated SCORM player.**
 
-# 🌍 SCORM Audio & Language Translator
+---
 
-A powerful Flask-based web application that translates SCORM e-learning courses including both text content and audio narration into multiple languages.
+## 🧠 Overview
 
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Flask](https://img.shields.io/badge/flask-3.0+-green.svg)
-![License](https://img.shields.io/badge/license-MIT-orange.svg)
+This **Audio-Only Edition** of the SCORM Translator focuses on **speech translation**, converting audio narration within SCORM packages into any selected language.  
+It automatically detects launch files using the SCORM `imsmanifest.xml`, supports playback for both original and translated packages, and provides an elegant web interface for uploading, translating, and playing courses.
 
-## ✨ Features
+---
 
-### 📝 Text Translation
-- Translates JavaScript text strings, titles, labels, and UI elements
-- Supports 12+ languages
-- Fast processing (5-15 seconds per course)
+## ✨ Key Features
 
-### 🎙️ Audio Translation (Advanced)
-- **Speech-to-Text**: Extracts speech from audio files
-- **Translation**: Translates transcribed text
-- **Text-to-Speech**: Generates new audio in target language
-- Supports MP3, WAV, OGG, M4A, FLAC, AAC formats
-- Automatic backup and restoration on failure
+| Feature | Description |
+|----------|--------------|
+| 🎧 **AI-Powered Audio Translation** | Converts narration from SCORM courses into any supported language using Google Translator + gTTS |
+| 📦 **Automatic Manifest Detection** | Finds and loads SCORM launch files automatically from `imsmanifest.xml` |
+| 🌍 **Multi-Language Support** | English, French, Spanish, Hindi, Russian, Arabic, Chinese, Japanese, and more |
+| 🖥 **SCORM Player (Local Mode)** | Plays SCORM packages locally with built-in LMS API mock (no LMS server required) |
+| ⚙️ **GPU Compatible (CUDA)** | Optional PyTorch support for GPU-accelerated translation pipelines |
+| 🗂 **Metadata Persistence** | Keeps track of uploaded, translated, and deleted courses using `metadata.json` |
+| 🧰 **User-Friendly Web UI** | Built with Bootstrap 5 for simplicity and responsiveness |
 
-### 📚 Course Management
-- Upload and organize SCORM packages
-- View course library with metadata
-- Play courses in embedded browser player
-- Download translated packages as ZIP files
-- Delete courses and translations
+---
 
-### 🎮 Embedded SCORM Player
-- Full-screen course playback
-- Responsive design
-- Quick navigation between versions
-- Download translated packages
+## ⚙️ Installation & Setup
 
-## 🚀 Quick Start
-
-### Prerequisites
-1. **Python 3.8+**
-2. **FFmpeg** (required for audio processing)
-
-### Installation
+### 1️⃣ Clone or Download Repository
 
 ```bash
-# 1. Install FFmpeg
-# Windows: choco install ffmpeg
-# Mac: brew install ffmpeg
-# Linux: sudo apt install ffmpeg
+git clone https://github.com/<yourusername>/scorm-audio-translator.git
+cd scorm-audio-translator
 
-# 2. Install Python dependencies
+
+2️⃣ Create a Virtual Environment
+python -m venv venv
+venv\Scripts\activate   # (Windows)
+# or
+source venv/bin/activate  # (Linux/Mac)
+
+
+3️⃣ Install Dependencies
 pip install -r requirements.txt
 
-# 3. Verify setup
-python test_setup.py
 
-# 4. Run application
+💡 If you have a GPU (CUDA 12.9), update requirements.txt lines:
+torch==2.5.0+cu129
+torchaudio==2.5.0+cu129
+--extra-index-url https://download.pytorch.org/whl/cu129
+
+
+🚀 Running the Application
+▶ Option 1: Run via Flask
 python app.py
-```
 
-Open **http://localhost:5000** in your browser.
+▶ Option 2: Use Auto-Launcher
+Windows:
+run_app.bat
 
-## 📖 Documentation
-
-- **[Quick Start Guide](QUICK_START.md)** - Get up and running in 3 minutes
-- **[Setup Instructions](SETUP_INSTRUCTIONS.md)** - Detailed installation guide
-- **Test Setup**: Run `python test_setup.py` to verify installation
-
-## 🎯 Usage
-
-### 1. Upload a Course
-- Go to homepage
-- Click "Browse Files" and select SCORM .zip file
-- Click "Upload Course"
-
-### 2. Translate Course
-
-**Text Only (Fast):**
-- Select language from dropdown
-- Uncheck "Translate audio files"
-- Click "Translate Course"
-- ⏱️ ~5-10 seconds
-
-**Text + Audio (Complete):**
-- Select language from dropdown
-- Check "Translate audio files"
-- Click "Translate Course"
-- ⏱️ Several minutes (depends on audio count)
-
-### 3. Play & Download
-- Click "Play" to view in browser
-- Click "Download" to get translated ZIP package
-
-## 🌍 Supported Languages
-
-| Language   | Code  | Text | Audio |
-|------------|-------|------|-------|
-| English    | en    | ✅   | ✅    |
-| French     | fr    | ✅   | ✅    |
-| German     | de    | ✅   | ✅    |
-| Spanish    | es    | ✅   | ✅    |
-| Italian    | it    | ✅   | ✅    |
-| Portuguese | pt    | ✅   | ✅    |
-| Hindi      | hi    | ✅   | ✅    |
-| Russian    | ru    | ✅   | ✅    |
-| Japanese   | ja    | ✅   | ✅    |
-| Chinese    | zh-cn | ✅   | ✅    |
-| Korean     | ko    | ✅   | ✅    |
-| Arabic     | ar    | ✅   | ✅    |
-
-## 🏗️ Architecture
-
-```
-┌─────────────────┐
-│  Flask Web App  │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │         │
-┌───▼───┐ ┌──▼───────┐
-│ Text  │ │  Audio   │
-│Trans- │ │  Trans-  │
-│lation │ │  lation  │
-└───┬───┘ └──┬───────┘
-    │        │
-    │   ┌────▼────┐
-    │   │Speech-  │
-    │   │to-Text  │
-    │   └────┬────┘
-    │        │
-    │   ┌────▼────┐
-    │   │Translate│
-    │   └────┬────┘
-    │        │
-    │   ┌────▼────┐
-    │   │Text-to- │
-    │   │Speech   │
-    │   └────┬────┘
-    │        │
-    └────┬───┴────┘
-         │
-    ┌────▼────────┐
-    │ Translated  │
-    │    SCORM    │
-    └─────────────┘
-```
-
-## 📂 Project Structure
-
-```
-scorm-translator/
-│
-├── app.py                      # Main Flask application
-├── requirements.txt            # Python dependencies
-├── test_setup.py              # Setup verification script
-├── README.md                  # This file
-├── QUICK_START.md             # Quick start guide
-├── SETUP_INSTRUCTIONS.md      # Detailed setup
-│
-├── templates/
-│   ├── index.html             # Upload page
-│   ├── library.html           # Course library
-│   └── player.html            # SCORM player
-│
-├── static/
-│   ├── scorm/                 # Original courses
-│   └── scorm_translated/      # Translated courses
-│
-├── uploads/                   # Temporary uploads
-├── zips/                      # Downloadable packages
-├── temp_audio/                # Audio processing temp files
-└── metadata.json              # Course metadata (auto-generated)
-```
-
-## 🔧 Configuration
-
-### Change Port
-In `app.py`:
-```python
-app.run(debug=True, port=8080)  # Change 5000 to desired port
-```
-
-### Change Secret Key (Important!)
-In `app.py`:
-```python
-app.secret_key = "your-secure-random-key-here"
-```
-
-### Production Mode
-```python
-app.run(debug=False, host='0.0.0.0', port=5000)
-```
-
-## 📊 Performance
-
-| Course Size | Text Translation | Audio (5 files) | Audio (20 files) |
-|-------------|------------------|-----------------|------------------|
-| Small       | 5 sec            | 2-3 min         | 8-12 min         |
-| Medium      | 10 sec           | 3-5 min         | 15-25 min        |
-| Large       | 15 sec           | 5-10 min        | 30-60 min        |
-
-## ⚠️ Limitations
-
-- **Internet Required**: Translation services need active connection
-- **Audio Quality**: Better source audio = better translation
-- **Processing Time**: Large courses with many audio files take longer
-- **File Size**: Each translation creates a full copy of the course
-- **Free Tier**: Uses free Google services (reasonable usage limits)
-
-## 🔍 Troubleshooting
-
-### FFmpeg Not Found
-```bash
-# Check if installed
-ffmpeg -version
-
-# Install if missing
-# Windows: choco install ffmpeg
-# Mac: brew install ffmpeg  
-# Linux: sudo apt install ffmpeg
-```
-
-### Audio Translation Fails
-- Ensure audio contains clear speech
-- Check internet connection
-- Verify FFmpeg is properly installed
-- Try with simpler audio files first
-
-### Module Not Found
-```bash
-pip install -r requirements.txt --upgrade
-```
-
-### Port Already in Use
-```bash
-# Change port in app.py or kill existing process
-# Windows: taskkill /PID <PID> /F
-# Mac/Linux: kill -9 <PID>
-```
-
-## 🛡️ Security Notes
-
-For production deployment:
-- ✅ Change the secret key
-- ✅ Enable HTTPS
-- ✅ Add authentication
-- ✅ Implement file size limits
-- ✅ Sanitize file names
-- ✅ Add rate limiting
-- ✅ Use environment variables
-
-## 🤝 Contributing
-
-Contributions are welcome! Areas for improvement:
-- Additional language support
-- Better audio quality algorithms
-- Batch processing
-- Progress bars for long translations
-- User authentication
-- Cloud storage integration
-
-## 📝 Dependencies
-
-- **Flask**: Web framework
-- **deep-translator**: Google Translate API wrapper
-- **gTTS**: Google Text-to-Speech
-- **SpeechRecognition**: Speech-to-text conversion
-- **pydub**: Audio file processing
-- **FFmpeg**: Audio encoding/decoding (external)
-
-## 📄 License
-
-MIT License - feel free to use in your projects!
-
-## 🙏 Acknowledgments
-
-- Google Translate API (via deep-translator)
-- Google Speech Recognition
-- Google Text-to-Speech (gTTS)
-- FFmpeg project
-- Flask framework
-
-## 📞 Support
-
-Having issues? 
-1. Run `python test_setup.py` to diagnose problems
-2. Check [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md) for detailed help
-3. Review [QUICK_START.md](QUICK_START.md) for common solutions
-4. Check console output for error messages
+Linux/Mac:
+./run_app.sh
 
 
+💻 How It Works
+
+- Upload a SCORM .zip file via the web interface
+- The system extracts and analyzes its structure
+- It automatically detects the main launch HTML file from imsmanifest.xml
+- You select a target language (e.g., French 🇫🇷, Hindi 🇮🇳, Spanish 🇪🇸)
+- The app transcribes audio → translates text → regenerates voice using gTTS
+- The translated course becomes playable in the integrated SCORM player
+
+
+🌐 Supported Languages
+| Language   | Code | Language             | Code  |
+| ---------- | ---- | -------------------- | ----- |
+| English    | en   | Hindi                | hi    |
+| French     | fr   | Japanese             | ja    |
+| German     | de   | Chinese (Simplified) | zh-cn |
+| Spanish    | es   | Korean               | ko    |
+| Portuguese | pt   | Russian              | ru    |
+| Italian    | it   | Arabic               | ar    |
+
+
+🧰 Dependencies
+| Library           | Purpose                                       |
+| ----------------- | --------------------------------------------- |
+| Flask             | Web Framework                                 |
+| deep-translator   | Google-based translation                      |
+| gTTS              | Text-to-Speech engine                         |
+| SpeechRecognition | Speech-to-Text (Google API)                   |
+| pydub             | Audio format conversion                       |
+| torch (optional)  | GPU acceleration (future Whisper integration) |
+
+
+🧩 Future Enhancements
+🧠 Text Translation Integration (AI-assisted for full multilingual SCORM)
+🪶 Whisper GPU-based Audio Transcription (offline & faster)
+☁️ Cloud Upload/Download support for enterprise LMS sync
+🔐 User Authentication / Course Access Control
+
+📜 License
+This project is licensed under the MIT License — feel free to use, modify, and distribute it.
+MIT License © 2025 Manoj Daniels
+
+🪄 Maintained By
+👨‍💻 MD (IT Professional)
+
+End-to-end AI + Web Integrations • SCORM Systems • Translation Automation
+📧 For collaboration inquiries — contact available upon request.
