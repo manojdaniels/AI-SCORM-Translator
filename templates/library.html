@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -212,3 +213,165 @@ async function pollProgress(pkgId) {
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SCORM Translator Library</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <style>
+    body { background: #f8f9fa; }
+    .card { border-radius: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+    .card-header { font-weight: 600; }
+    .badge { font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container my-5">
+    <h2 class="text-center mb-4">📘 SCORM Course Library</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container mb-3">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if courses %}
+      <div class="row">
+        {% for course in courses %}
+          <div class="col-md-6 mb-4">
+            <div class="card">
+              <div class="card-header bg-primary text-white">
+                {{ course.name }}
+              </div>
+              <div class="card-body">
+                <p><strong>Course ID:</strong> {{ course.id }}</p>
+                <p><strong>Uploaded:</strong> {{ course.uploaded_at | default('Unknown') }}</p>
+
+                {% if course.translations %}
+                  <h6>🌐 Available Translations:</h6>
+                  <ul>
+                    {% for lang, info in course.translations.items() %}
+                      <li>
+                        <span class="badge bg-success">{{ info.language }}</span>
+                        - <a href="{{ url_for('play', pkg=course.id, lang=lang) }}" target="_blank">Play</a>
+                        | <a href="{{ url_for('download', zipname=info.zip_file) }}">Download</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p class="text-muted">No translations yet.</p>
+                {% endif %}
+
+                <hr>
+                <h6>🌍 Translate to New Language</h6>
+                <form action="{{ url_for('translate_course') }}" method="post" class="row gy-2 align-items-center">
+                  <input type="hidden" name="pkg_id" value="{{ course.id }}">
+                  <div class="col-md-6">
+                    <select class="form-select" name="language" required>
+                      <option value="">Select Language</option>
+                      {% for lang in languages %}
+                        <option value="{{ lang }}">{{ lang }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-md-4 form-check">
+                    <input class="form-check-input" type="checkbox" name="translate_audio" id="audio_{{ loop.index }}">
+                    <label class="form-check-label" for="audio_{{ loop.index }}">Include Audio</label>
+                  </div>
+                  <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100">Translate</button>
+                  </div>
+                </form>
+
+                <hr>
+                <a href="{{ url_for('play', pkg=course.id, lang='en') }}" class="btn btn-primary btn-sm mt-2" target="_blank">
+                  ▶️ Play Original
+                </a>
+                <form action="{{ url_for('delete_course', pkg_id=course.id) }}" method="post" class="d-inline">
+                  <button type="submit" class="btn btn-danger btn-sm mt-2">🗑 Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info text-center">
+        No courses uploaded yet. Go to the <a href="{{ url_for('index') }}">Upload</a> page.
+      </div>
+    {% endif %}
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const progressModal = document.createElement('div');
+  progressModal.innerHTML = `
+    <div class="modal fade" id="progressModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 text-center">
+          <h5 class="mb-3">⏳ Translating Course...</h5>
+          <div class="progress mb-3">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                 role="progressbar" style="width: 0%">0%</div>
+          </div>
+          <p id="progressMessage" class="text-muted mb-0">Starting...</p>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(progressModal);
+
+  const modal = new bootstrap.Modal(document.getElementById('progressModal'));
+  const progressBar = document.querySelector('.progress-bar');
+  const messageEl = document.getElementById('progressMessage');
+  let currentPkg = null, pollInterval = null;
+
+  // Intercept translate form submits
+  document.querySelectorAll('form[action*="translate"]').forEach(form => {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const pkgId = form.querySelector('[name="pkg_id"]').value;
+      currentPkg = pkgId;
+      modal.show();
+      pollInterval = setInterval(() => pollProgress(pkgId), 2000);
+      form.submit();
+    });
+  });
+
+  async function pollProgress(pkgId) {
+    try {
+      const res = await fetch(`/progress/${pkgId}`);
+      const data = await res.json();
+      const percent = data.percent || 0;
+      const message = data.message || "Working...";
+      progressBar.style.width = `${percent}%`;
+      progressBar.innerText = `${percent}%`;
+      messageEl.innerText = message;
+      if (percent >= 100) {
+        clearInterval(pollInterval);
+        setTimeout(() => modal.hide(), 2000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+});
+</script>
+
+
+</body>
+</html>
+>>>>>>> 0b1e9e43 (SCORM Audio Translation)
