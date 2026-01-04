@@ -1,8 +1,3 @@
-ChatGPT Suggested app.py for Indian version. 
-
-
-
-
 import os
 import shutil
 import zipfile

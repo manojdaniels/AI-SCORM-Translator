@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import os
 import shutil
 import zipfile
@@ -428,7 +427,7 @@ def translate_node():
     return jsonify({'t': translate(txt, tgt)})
 
 if __name__ == '__main__':
-=======
+
 import os
 import shutil
 import zipfile
@@ -858,5 +857,4 @@ def translate_node():
     return jsonify({'t': translate(txt, tgt)})
 
 if __name__ == '__main__':
->>>>>>> 0b1e9e43 (SCORM Audio Translation)
     app.run(debug=True, port=5000)
